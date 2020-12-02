@@ -1,3 +1,3 @@
-# Advent Of Code 2020
+# Advent Of Code
 
-This repository contains my code for https://adventofcode.com/2020.
+This repository contains my code for https://adventofcode.com.
