@@ -17,9 +17,7 @@ object Day03 : Puzzle() {
                 countTrees(1, 2)
 
     private fun countTrees(slopeX: Int, slopeY: Int): Long =
-        input
-            .filterIndexed { index, line ->
-                (index % slopeY == 0) && line[(index / slopeY * slopeX) % width] == '#'
-            }
-            .count().toLong()
+        input.filterIndexed { index, line ->
+            (index % slopeY == 0) && line[(index / slopeY * slopeX) % width] == '#'
+        }.size.toLong()
 }
