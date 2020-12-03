@@ -3,7 +3,7 @@ package nl.dricus.adventofcode.year2020
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
-object Day02 : Puzzle {
+object Day02 : Puzzle() {
     private val input by lazy { Input.lines(2020, 2).map { Entry(it) } }
 
     override fun part1() = input.count { isValidPart1(it) }

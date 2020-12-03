@@ -1,6 +1,6 @@
 package nl.dricus.adventofcode.util
 
-interface Puzzle {
-    fun part1(): Any
-    fun part2(): Any
+abstract class Puzzle {
+    open fun part1(): Any = "TODO"
+    open fun part2(): Any = "TODO"
 }
