@@ -4,23 +4,23 @@ import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
 object Day05 : Puzzle() {
-    private val allPossibleIds = 0..0b1111111111
+    private val allPossibleSeatIds = 0..0b1111111111
 
-    private val input by lazy {
+    private val occupiedSeatIds by lazy {
         Input.lines(2020, 5)
             .map {
-                it.foldIndexed(0) { index, acc, character ->
+                it.foldIndexed(0) { index, seatId, character ->
                     if (character in "BR")
-                        acc or (1 shl (9 - index))
+                        seatId or (1 shl (9 - index))
                     else
-                        acc
+                        seatId
                 }
             }
     }
 
-    override fun part1() = input.maxOrNull()!!
+    override fun part1() = occupiedSeatIds.maxOrNull()!!
 
     override fun part2() =
-        (allPossibleIds subtract input)
-            .first { input.contains(it - 1) && input.contains(it + 1) }
+        (allPossibleSeatIds subtract occupiedSeatIds)
+            .first { occupiedSeatIds.contains(it - 1) && occupiedSeatIds.contains(it + 1) }
 }
