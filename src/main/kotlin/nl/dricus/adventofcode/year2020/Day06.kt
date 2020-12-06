@@ -4,30 +4,27 @@ import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
 object Day06 : Puzzle() {
-    private class Person(val yesAnswers: Set<Char>)
-    private class Group(val persons: List<Person>)
+    private val groups by lazy { parseGroups(Input.string(2020, 6)) }
 
-    private val groups by lazy {
-        Input.string(2020, 6)
-            .split("\n\n")
-            .map {
-                Group(it.split("\n")
-                    .map { personAnswers -> Person(personAnswers.toSet()) })
-            }
-    }
+    private fun parseGroups(input: String) = input
+        .split("\n\n")
+        .map { parsePerson(it) }
 
-    override fun part1() =
-        groups
-            .map { it.persons.flatMap { person -> person.yesAnswers }.toSet() }
-            .fold(0) { sum, groupAnswers -> sum + groupAnswers.size }
+    private fun parsePerson(input: String) = input
+        .split("\n")
+        .map { personAnswers -> personAnswers.toSet() }
 
-    override fun part2(): Int =
-        groups
-            .map {
-                val allQuestions = ('a'..'z').toSet()
-                it.persons.fold(allQuestions) { allPersonsYes, current ->
-                    allPersonsYes intersect current.yesAnswers
-                }
-            }
-            .fold(0) { sum, allPersonsYes -> sum + allPersonsYes.size }
+    override fun part1() = groups
+        .map(::allYesAnswers)
+        .sumBy { it.size }
+
+    private fun allYesAnswers(group: List<Set<Char>>) = group
+        .reduce { allYesAnswers, personYesAnswers -> allYesAnswers union personYesAnswers }
+
+    override fun part2() = groups
+        .map(::yesAnswersByAllPersons)
+        .sumBy { it.size }
+
+    private fun yesAnswersByAllPersons(group: List<Set<Char>>) = group
+        .reduce { allPersonsAnsweredYes, personAnswers -> allPersonsAnsweredYes intersect personAnswers }
 }
