@@ -29,5 +29,5 @@ object Day06 : Puzzle() {
                     allPersonsYes intersect current.yesAnswers
                 }
             }
-            .fold(0) { sum, current -> sum + current.size }
+            .fold(0) { sum, allPersonsYes -> sum + allPersonsYes.size }
 }
