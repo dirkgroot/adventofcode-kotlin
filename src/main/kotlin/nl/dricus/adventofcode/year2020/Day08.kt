@@ -19,7 +19,7 @@ object Day08 : Puzzle() {
         .first { (isLoop, _) -> !isLoop }
         .let { (_, acc) -> acc }
 
-    private fun run(flip: Int = -1, ip: Int = 0, acc: Int = 0, visited: Set<Int> = emptySet()): Pair<Boolean, Int> =
+    private tailrec fun run(flip: Int = -1, ip: Int = 0, acc: Int = 0, visited: Set<Int> = emptySet()): Pair<Boolean, Int> =
         when {
             ip >= program.size -> false to acc
             visited.contains(ip) -> true to acc
