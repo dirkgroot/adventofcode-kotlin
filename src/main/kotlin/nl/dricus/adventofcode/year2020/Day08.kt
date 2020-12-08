@@ -2,10 +2,9 @@ package nl.dricus.adventofcode.year2020
 
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
-import java.lang.IllegalStateException
 
-object Day08 : Puzzle() {
-    private val program by lazy { parseProgram(Input.lines(2020, 8)) }
+class Day08(input: Input) : Puzzle() {
+    private val program by lazy { parseProgram(input.lines()) }
 
     private fun parseProgram(code: List<String>) = code.map {
         it.split(" ").let { (instruction, argument) -> instruction to argument.toInt() }

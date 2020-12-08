@@ -3,9 +3,9 @@ package nl.dricus.adventofcode.year2020
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
-object Day04 : Puzzle() {
-    private val input: List<Map<String, String>> by lazy {
-        Input.string(2020, 4)
+class Day04(input: Input) : Puzzle() {
+    private val passports: List<Map<String, String>> by lazy {
+        input.string()
             .replace("\n\n", ";")
             .replace('\n', ' ')
             .split(';')
@@ -17,9 +17,9 @@ object Day04 : Puzzle() {
             }
     }
 
-    override fun part1() = input.count { requiredFieldsPresent(it) }
+    override fun part1() = passports.count { requiredFieldsPresent(it) }
 
-    override fun part2() = input.count { requiredFieldsPresent(it) && requiredFieldsValid(it) }
+    override fun part2() = passports.count { requiredFieldsPresent(it) && requiredFieldsValid(it) }
 
     private fun requiredFieldsPresent(passport: Map<String, String>) =
         passport.keys.containsAll(listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"))

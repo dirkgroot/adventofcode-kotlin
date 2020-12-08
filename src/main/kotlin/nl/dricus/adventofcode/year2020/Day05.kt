@@ -3,11 +3,11 @@ package nl.dricus.adventofcode.year2020
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
-object Day05 : Puzzle() {
+class Day05(input: Input) : Puzzle() {
     private val allPossibleSeatIds = 0..0b1111111111
 
     private val occupiedSeatIds by lazy {
-        Input.lines(2020, 5)
+        input.lines()
             .map {
                 it.foldIndexed(0) { index, seatId, character ->
                     if (character in "BR")

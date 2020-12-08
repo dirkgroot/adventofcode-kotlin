@@ -3,8 +3,8 @@ package nl.dricus.adventofcode.year2020
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
-object Day01 : Puzzle() {
-    private val input by lazy { Input.lines(2020, 1).map { it.toInt() } }
+class Day01(input: Input) : Puzzle() {
+    private val input by lazy { input.lines().map { it.toInt() } }
 
     override fun part1() =
         input

@@ -3,8 +3,8 @@ package nl.dricus.adventofcode.year2020
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
-object Day07 : Puzzle() {
-    private val rules by lazy { parseBagRules(Input.lines(2020, 7)) }
+class Day07(input: Input) : Puzzle() {
+    private val rules by lazy { parseBagRules(input.lines()) }
 
     private fun parseBagRules(input: List<String>) = input.map(this::parseBagRule).toMap()
 

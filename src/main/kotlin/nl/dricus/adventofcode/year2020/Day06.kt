@@ -3,8 +3,8 @@ package nl.dricus.adventofcode.year2020
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 
-object Day06 : Puzzle() {
-    private val groups by lazy { parseGroups(Input.string(2020, 6)) }
+class Day06(input: Input) : Puzzle() {
+    private val groups by lazy { parseGroups(input.string()) }
 
     private fun parseGroups(input: String) = input
         .split("\n\n")
