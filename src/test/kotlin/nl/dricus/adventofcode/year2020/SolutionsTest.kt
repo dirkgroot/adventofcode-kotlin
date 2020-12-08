@@ -1,9 +1,9 @@
-package nl.dricus.adventofcode
+package nl.dricus.adventofcode.year2020
 
+import nl.dricus.adventofcode.base.AbstractYearSolutionsTest
 import nl.dricus.adventofcode.util.ClasspathResourceInput
-import nl.dricus.adventofcode.year2020.*
 
-class Year2020SolutionsTest : AbstractYearSolutionsTest() {
+class SolutionsTest : AbstractYearSolutionsTest() {
     override val testCases = listOf(
         TestCase(Day01(ClasspathResourceInput(2020, 1)), 365619, 236873508),
         TestCase(Day02(ClasspathResourceInput(2020, 2)), 424, 747),

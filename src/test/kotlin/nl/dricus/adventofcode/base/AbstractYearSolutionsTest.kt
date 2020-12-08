@@ -1,4 +1,4 @@
-package nl.dricus.adventofcode
+package nl.dricus.adventofcode.base
 
 import nl.dricus.adventofcode.util.Puzzle
 import org.junit.jupiter.api.DynamicTest
