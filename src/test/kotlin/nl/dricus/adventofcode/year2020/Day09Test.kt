@@ -1,5 +1,6 @@
 package nl.dricus.adventofcode.year2020
 
+import nl.dricus.adventofcode.util.ClasspathResourceInput
 import nl.dricus.adventofcode.util.StringInput
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -38,5 +39,11 @@ class Day09Test {
     @Test
     fun part2() {
         assertEquals(62L, Day09(input, 5, 127L).part2())
+    }
+
+    @Test
+    fun bogoPart2() {
+        assertEquals(62L, Day09(input, 5, 127L).part2())
+        assertEquals(4830226L, Day09(ClasspathResourceInput(2020, 9), 25, 36845998L).bogoPart2())
     }
 }

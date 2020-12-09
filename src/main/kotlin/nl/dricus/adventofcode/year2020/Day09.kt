@@ -4,6 +4,7 @@ import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.random.Random
 
 class Day09(input: Input, private val preambleLenght: Int, private val part1Solution: Long) : Puzzle() {
     private val numbers by lazy { input.lines().map { it.toLong() } }
@@ -28,4 +29,13 @@ class Day09(input: Input, private val preambleLenght: Int, private val part1Solu
         }
         .first { state -> state.sum == part1Solution }
         .let { state -> state.min + state.max }
+
+    /**
+     * Solution inspired by https://en.wikipedia.org/wiki/Bogosort.
+     */
+    fun bogoPart2() = generateSequence { Random.nextInt(0, numbers.lastIndex - 1) }
+        .map { start -> start to Random.nextInt(start + 1, numbers.lastIndex + 1) }
+        .map { (start, end) -> numbers.subList(start, end + 1) }
+        .first { it.sum() == part1Solution }
+        .let { it.minOrNull()!! + it.maxOrNull()!! }
 }
