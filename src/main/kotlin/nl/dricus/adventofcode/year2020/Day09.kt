@@ -5,7 +5,7 @@ import nl.dricus.adventofcode.util.Puzzle
 import kotlin.math.max
 import kotlin.math.min
 
-class Day09(input: Input, private val preambleLenght: Int = 25, private val part1Solution: Long) : Puzzle() {
+class Day09(input: Input, private val preambleLenght: Int, private val part1Solution: Long) : Puzzle() {
     private val numbers by lazy { input.lines().map { it.toLong() } }
 
     override fun part1() =
