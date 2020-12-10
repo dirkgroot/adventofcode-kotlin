@@ -14,6 +14,6 @@ class Day10(input: Input) : Puzzle() {
 
     override fun part2() = adapters.plus(deviceJoltage).sorted()
         .fold(mapOf(0L to 1L)) { combinations, joltage ->
-            combinations + (joltage to (-3L..-1L).sumOf { combinations.getOrDefault(joltage + it, 0L) })
+            combinations + (joltage to (1L..3L).sumOf { combinations.getOrDefault(joltage - it, 0L) })
         }[deviceJoltage]!!
 }
