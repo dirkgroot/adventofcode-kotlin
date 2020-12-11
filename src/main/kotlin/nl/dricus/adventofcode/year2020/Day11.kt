@@ -90,5 +90,5 @@ class Day11(input: Input) : Puzzle() {
         }
 
     private fun List<List<Char>>.countOccupiedSeats() =
-        fold(0) { count, row -> count + row.count { it == occupied } }
+        sumBy { row -> row.count { it == occupied } }
 }
