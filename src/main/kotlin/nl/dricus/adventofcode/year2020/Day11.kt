@@ -16,21 +16,21 @@ class Day11(input: Input) : Puzzle() {
 
     private val rowCount by lazy { area.size }
     private val colCount by lazy { area[0].size }
-    private val offsets = listOf(-1 to -1, -1 to 0, -1 to 1, 1 to -1, 1 to 0, 1 to 1, 0 to -1, 0 to 1)
+    private val directions = listOf(-1 to -1, -1 to 0, -1 to 1, 1 to -1, 1 to 0, 1 to 1, 0 to -1, 0 to 1)
 
     override fun part1() = createRounds(4, ::adjacentNeighbors)
         .last()
         .countOccupiedSeats()
 
     private fun adjacentNeighbors(rowIndex: Int, colIndex: Int) =
-        offsets.map { (rowDiff, colDiff) -> rowIndex + rowDiff to colIndex + colDiff }
+        directions.map { (rowDiff, colDiff) -> rowIndex + rowDiff to colIndex + colDiff }
 
     override fun part2() = createRounds(5, ::visibleNeighbors)
         .last()
         .countOccupiedSeats()
 
     private fun visibleNeighbors(rowIndex: Int, colIndex: Int) =
-        offsets.map { (rowDiff, colDiff) -> visibleNeighbor(rowIndex, colIndex, rowDiff, colDiff) }
+        directions.map { (rowDiff, colDiff) -> visibleNeighbor(rowIndex, colIndex, rowDiff, colDiff) }
 
     private tailrec fun visibleNeighbor(rowIndex: Int, colIndex: Int, rowDiff: Int, colDiff: Int): Pair<Int, Int> {
         val row = rowIndex + rowDiff
