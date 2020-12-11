@@ -48,8 +48,8 @@ class Day11(input: Input) : Puzzle() {
         val row = rowIndex + rowDiff
         val col = colIndex + colDiff
         return when {
-            row < 0 || col < 0 -> rowIndex to colIndex
-            row >= rowCount || col >= colCount -> rowIndex to colIndex
+            row == 0 || col == 0 -> row to col
+            row == rowCount - 1 || col == colCount - 1 -> row to col
             area[row][col] != floor -> row to col
             else -> visibleNeighbor(row, col, rowDiff, colDiff)
         }
