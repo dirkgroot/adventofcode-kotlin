@@ -44,8 +44,6 @@ class Day12(input: Input) : Puzzle() {
         }
 
     private tailrec fun rotate(dirX: Int, dirY: Int, degrees: Int): Pair<Int, Int> =
-        when (degrees % 360) {
-            0 -> dirX to dirY
-            else -> rotate(dirY, -dirX, degrees - 90)
-        }
+        if (degrees % 360 == 0) dirX to dirY
+        else rotate(dirY, -dirX, degrees - 90)
 }
