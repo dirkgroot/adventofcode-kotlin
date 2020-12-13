@@ -10,18 +10,18 @@ class Day13(input: Input) : Puzzle() {
     private val schedule2 by lazy { inputLines[1].split(",").map { if (it == "x") 1 else it.toLong() } }
 
     override fun part1() = generateSequence(earliestTime) { it + 1 }
-        .map { time -> time to schedule1.firstOrNull { busId -> time % busId == 0 } }
-        .filter { (_, busId) -> busId != null }
+        .mapNotNull { time -> schedule1.firstOrNull { busId -> time % busId == 0 }?.let { time to it } }
         .first()
-        .let { (time, busId) -> busId!! * (time - earliestTime) }
+        .let { (time, busId) -> busId * (time - earliestTime) }
 
     override fun part2() = schedule2
-        .foldIndexed(1L to 1L) { index, (i, inc), it ->
-            findNext(i + index, inc, it) - index to inc * it
+        .foldIndexed(1L to 1L) { index, (departure, incrementBy), busId ->
+            val nextDeparture = findNext(departure + index, incrementBy, busId) - index
+            nextDeparture to incrementBy * busId
         }
-        .let { (i, _) -> i }
+        .let { (departure, _) -> departure }
 
-    private tailrec fun findNext(i: Long, inc: Long, divisor: Long): Long =
-        if (i % divisor == 0L) i
-        else findNext(i + inc, inc, divisor)
+    private tailrec fun findNext(departure: Long, incrementBy: Long, busId: Long): Long =
+        if (departure % busId == 0L) departure
+        else findNext(departure + incrementBy, incrementBy, busId)
 }
