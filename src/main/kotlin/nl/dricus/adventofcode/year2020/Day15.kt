@@ -6,31 +6,23 @@ import nl.dricus.adventofcode.util.Puzzle
 class Day15(input: Input) : Puzzle() {
     private val startingNumbers by lazy { input.string().split(",").map { it.toInt() } }
 
-    override fun part1() = solve(2019)
+    override fun part1() = solve(2_020)
 
-    override fun part2() = solve(29999999)
+    override fun part2() = solve(30_000_000)
 
     private fun solve(maxIndex: Int): Int {
-        val seen = mutableMapOf<Int, MutableList<Int>>()
+        val spoken = IntArray(maxIndex) { -1 }
 
-        fun add(i: Int, index: Int) {
-            val list = seen[i] ?: (mutableListOf<Int>().apply { seen[i] = this })
-            list.add(index)
-            if (list.size > 2) list.removeAt(0)
+        tailrec fun turns(turn: Int, lastSpoken: Int, next: Int): Int {
+            if (turn == maxIndex) return lastSpoken
+
+            val nextToSpeek = spoken[next].let { found -> if (found == -1) 0 else turn - found }
+            spoken[next] = turn
+            return turns(turn + 1, next, nextToSpeek)
         }
 
-        startingNumbers.forEachIndexed { index, i ->
-            add(i, index)
-        }
+        startingNumbers.forEachIndexed { index, n -> spoken[n] = index }
 
-        var last = startingNumbers.last()
-        for (i in (startingNumbers.lastIndex + 1)..maxIndex) {
-            val indices = seen[last]!!
-
-            last = if (indices.size == 2) indices[1] - indices[0] else 0
-            add(last, i)
-        }
-
-        return last
+        return turns(startingNumbers.size, startingNumbers.last(), 0)
     }
 }
