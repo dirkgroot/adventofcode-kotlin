@@ -11,7 +11,6 @@ class Day15(input: Input) : Puzzle() {
     override fun part2() = solve(29999999)
 
     private fun solve(maxIndex: Int): Int {
-        val numbers = startingNumbers.toMutableList()
         val seen = mutableMapOf<Int, MutableList<Int>>()
 
         fun add(i: Int, index: Int) {
@@ -20,12 +19,12 @@ class Day15(input: Input) : Puzzle() {
             if (list.size > 2) list.removeAt(0)
         }
 
-        numbers.forEachIndexed { index, i ->
+        startingNumbers.forEachIndexed { index, i ->
             add(i, index)
         }
 
-        var last = numbers.last()
-        for (i in (numbers.lastIndex + 1)..maxIndex) {
+        var last = startingNumbers.last()
+        for (i in (startingNumbers.lastIndex + 1)..maxIndex) {
             val indices = seen[last]!!
 
             last = if (indices.size == 2) indices[1] - indices[0] else 0
