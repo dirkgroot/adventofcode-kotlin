@@ -6,9 +6,7 @@ import nl.dricus.adventofcode.util.Puzzle
 class Day18(input: Input) : Puzzle() {
     private val tokenRegex = "\\s*(\\d+|\\+|\\*|\\(|\\))".toRegex()
 
-    abstract class Token {
-        override fun toString() = this::class.simpleName ?: ""
-    }
+    abstract class Token
 
     object Plus : Token()
     object Star : Token()
