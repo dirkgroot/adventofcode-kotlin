@@ -31,18 +31,13 @@ class Day17(input: Input) : Puzzle() {
 
         return Slice(
             List(height) { index ->
-                if (index < 6 || index >= (height - 6)) MutableList(width) { false }
-                else {
-                    MutableList(6) { false }.apply {
-                        addAll(lines[index - 6].map { it == '#' })
-                        addAll(List(6) { false })
-                    }
-                }
+                if (index < 6 || index >= (height - 6)) List(width) { false }
+                else List(6) { false } + lines[index - 6].map { it == '#' } + List(6) { false }
             }
         )
     }
 
-    private fun inactiveCopyOf(source: Slice) = Slice(source.cubes.map { it.map { false }.toMutableList() })
+    private fun inactiveCopyOf(source: Slice) = Slice(source.cubes.map { it.map { false } })
 
     override fun part1(): Int {
         val dim = (1..6).fold(dimension) { dim, _ ->
