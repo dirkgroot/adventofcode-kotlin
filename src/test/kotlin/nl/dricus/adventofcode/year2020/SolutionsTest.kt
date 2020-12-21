@@ -25,6 +25,6 @@ class SolutionsTest : AbstractYearSolutionsTest() {
         TestCase(Day18(ClasspathResourceInput(2020, 18)), 29839238838303L, 201376568795521L),
         TestCase(Day19(ClasspathResourceInput(2020, 19)), 147, 263),
         TestCase(Day20(ClasspathResourceInput(2020, 20)), 66020135789767L, 1537),
-        TestCase(Day21(ClasspathResourceInput(2020, 21))),
+        TestCase(Day21(ClasspathResourceInput(2020, 21)), 2072, "fdsfpg,jmvxx,lkv,cbzcgvc,kfgln,pqqks,pqrvc,lclnj"),
     )
 }

@@ -17,18 +17,17 @@ class Day21(input: Input) : Puzzle() {
     }
 
     override fun part1() =
-        ingredientPerAllergen()
+        ingredientPerAllergent()
             .map { (_, ingredients) -> ingredients }
             .let { ingredientsWithAllergent ->
                 foods.sumOf { food -> food.ingredients.count { it !in ingredientsWithAllergent } }
             }
 
     override fun part2() =
-        ingredientPerAllergen().sortedBy { (allergen, _) -> allergen }
+        ingredientPerAllergent().sortedBy { (allergent, _) -> allergent }
             .joinToString(",") { (_, ingredient) -> ingredient }
-            .also { println(it) }
 
-    private fun ingredientPerAllergen(): List<Pair<String, String>> {
+    private fun ingredientPerAllergent(): List<Pair<String, String>> {
         val allAllergents = foods.flatMap { it.allergents }.toSet()
         val foodsPerAllergent = allAllergents.map { allergent ->
             allergent to foods.filter { it.allergents.contains(allergent) }
@@ -40,23 +39,23 @@ class Day21(input: Input) : Puzzle() {
                 .distinct()
         }
 
-        val allergenIngredient = ingredientsPerAllergent.map { (allergent, ingredients) ->
+        val allergentIngredient = ingredientsPerAllergent.map { (allergent, ingredients) ->
             allergent to ingredients.filter { ingredient ->
                 foodsPerAllergent[allergent]!!.all { food -> food.ingredients.contains(ingredient) }
             }.toMutableList()
         }
 
-        while (!allergenIngredient.all { it.second.size == 1 }) {
-            allergenIngredient.forEach { (_, ingredients) ->
+        while (!allergentIngredient.all { it.second.size == 1 }) {
+            allergentIngredient.forEach { (_, ingredients) ->
                 if (ingredients.size == 1) {
                     val excludeFromRest = ingredients[0]
-                    allergenIngredient
+                    allergentIngredient
                         .filter { (_, ingredients) -> ingredients.size > 1 }
                         .forEach { (_, ingredients) -> ingredients.remove(excludeFromRest) }
                 }
             }
         }
 
-        return allergenIngredient.map { (allergen, ingredients) -> allergen to ingredients[0] }
+        return allergentIngredient.map { (allergent, ingredients) -> allergent to ingredients[0] }
     }
 }
