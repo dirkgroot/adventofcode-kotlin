@@ -7,11 +7,7 @@ import kotlin.math.sqrt
 class Day20(input: Input) : Puzzle() {
     data class TileArrangement(val tileId: Long, val image: List<List<Char>>)
 
-    private val tiles by lazy {
-        input.string().split("\n\n")
-            .map { parseTile(it) }
-            .toMap()
-    }
+    private val tiles by lazy { input.string().split("\n\n").map { parseTile(it) }.toMap() }
 
     private fun parseTile(text: String): Pair<Long, List<List<Char>>> {
         val lines = text.split("\n")
@@ -27,11 +23,11 @@ class Day20(input: Input) : Puzzle() {
     override fun part2() = permutations(imageFromGrid(arrange()))
         .map { it to findSeaMonsters(it) }
         .first { (_, monsters) -> monsters.isNotEmpty() }
-        .let { (image, monsters) -> eraseSeaMonsters(image, monsters) }
+        .let { (image, monsters) -> markSeaMonsters(image, monsters) }
         .sumOf { line -> line.count { c -> c == '#' } }
 
     private fun arrange(): List<List<TileArrangement>> {
-        val gridSize = sqrt(tiles.keys.size.toDouble()).toInt() * 4
+        val gridSize = sqrt(tiles.keys.size.toDouble()).toInt() * 2 + 1
         val tileIds = tiles.map { (id, _) -> id }.toMutableList()
         val grid = List(gridSize) { MutableList<TileArrangement?>(gridSize) { null } }
 
@@ -48,26 +44,23 @@ class Day20(input: Input) : Puzzle() {
                 .flatMap { (x, y) -> setOf(x - 1 to y, x + 1 to y, x to y - 1, x to y + 1) }
                 .filter { (x, y) -> grid[y][x] == null }
                 .toSet()
-            fill.forEach { (x, y) ->
-                val tilePermutations = tileIds.asSequence().flatMap { tileId ->
-                    permutations(tiles[tileId]!!).map { tileId to it }
-                }
-
-                tilePermutations
-                    .firstOrNull { (_, permutation) ->
-                        (grid[y][x - 1]?.let { fitsHorizontally(it.image, permutation) } ?: false) ||
-                                (grid[y][x + 1]?.let { fitsHorizontally(permutation, it.image) } ?: false) ||
-                                (grid[y - 1][x]?.let { fitsVertically(it.image, permutation) } ?: false) ||
-                                (grid[y + 1][x]?.let { fitsVertically(permutation, it.image) } ?: false)
+                .onEach { (x, y) ->
+                    val tilePermutations = tileIds.asSequence().flatMap { tileId ->
+                        permutations(tiles[tileId]!!).map { tile -> tileId to tile }
                     }
-                    .let { permutation ->
-                        if (permutation != null) {
-                            val (id, tile) = permutation
+
+                    tilePermutations
+                        .firstOrNull { (_, permutation) ->
+                            (grid[y][x - 1]?.let { fitsHorizontally(it.image, permutation) } ?: false) ||
+                                    (grid[y][x + 1]?.let { fitsHorizontally(permutation, it.image) } ?: false) ||
+                                    (grid[y - 1][x]?.let { fitsVertically(it.image, permutation) } ?: false) ||
+                                    (grid[y + 1][x]?.let { fitsVertically(permutation, it.image) } ?: false)
+                        }
+                        ?.let { (id, tile) ->
                             grid[y][x] = TileArrangement(id, tile)
                             tileIds.remove(id)
                         }
-                    }
-            }
+                }
         }
 
         return grid
@@ -91,10 +84,10 @@ class Day20(input: Input) : Puzzle() {
     }
 
     private fun fitsHorizontally(tile1: List<List<Char>>, tile2: List<List<Char>>) =
-        tile1.withIndex().all { (y, line) -> line[9] == tile2[y][0] }
+        tile1.withIndex().all { (y, line) -> line.last() == tile2[y].first() }
 
     private fun fitsVertically(tile1: List<List<Char>>, tile2: List<List<Char>>) =
-        tile1[9].withIndex().all { (x, c) -> tile2[0][x] == c }
+        tile1.last().withIndex().all { (x, c) -> tile2.first()[x] == c }
 
     private fun rotateCW(tile: List<List<Char>>) = transpose(tile, ::rotateXYCounterCW)
     private fun flipHorizontal(tile: List<List<Char>>) = transpose(tile, ::flipXYHorizontal)
@@ -103,11 +96,7 @@ class Day20(input: Input) : Puzzle() {
     private fun transpose(tile: List<List<Char>>, transformation: (Int, Int, Int) -> Pair<Int, Int>) =
         tile.indices.map { y ->
             tile[y].indices.map { x ->
-                transformation(
-                    x,
-                    y,
-                    tile.size
-                ).let { (sx, sy) -> tile[sy][sx] }
+                transformation(x, y, tile.size).let { (sx, sy) -> tile[sy][sx] }
             }
         }
 
@@ -118,7 +107,8 @@ class Day20(input: Input) : Puzzle() {
     private fun imageFromGrid(grid: List<List<TileArrangement>>) = grid
         .map { line ->
             line.map { arr ->
-                TileArrangement(arr.tileId, arr.image.slice(1 until arr.image.lastIndex)
+                TileArrangement(arr.tileId, arr.image
+                    .slice(1 until arr.image.lastIndex)
                     .map { line -> line.slice(1 until line.lastIndex) })
             }
         }
@@ -139,32 +129,29 @@ class Day20(input: Input) : Puzzle() {
     private fun findSeaMonsters(image: List<List<Char>>) = sequence {
         for (y in 0..image.size - seaMosterHeight) {
             for (x in 0..image[y].size - seaMosterWidth) {
-                val isSeamonster = seaMonster.withIndex().all { (monsterY, line) ->
-                    line.withIndex().all { (monsterX, c) ->
-                        when (c) {
-                            '#' -> image[y + monsterY][x + monsterX] == '#'
-                            else -> true
-                        }
-                    }
-                }
-
-                if (isSeamonster) yield(x to y)
+                if (isSeaMonster(image, x, y)) yield(x to y)
             }
         }
     }.toList()
 
-    private fun eraseSeaMonsters(image: List<List<Char>>, monsters: List<Pair<Int, Int>>): List<List<Char>> {
-        val result = image.map { it.toMutableList() }
-
-        monsters.forEach { (monsterX, monsterY) ->
-            for (y in 0 until seaMosterHeight) {
-                for (x in 0 until seaMosterWidth) {
-                    if (seaMonster[y][x] == '#')
-                        result[monsterY + y][monsterX + x] = ' '
+    private fun isSeaMonster(image: List<List<Char>>, x: Int, y: Int) =
+        seaMonster.withIndex().all { (monsterY, line) ->
+            line.withIndex().all { (monsterX, c) ->
+                when (c) {
+                    '#' -> image[y + monsterY][x + monsterX] == '#'
+                    else -> true
                 }
             }
         }
 
-        return result
-    }
+    private fun markSeaMonsters(image: List<List<Char>>, monsters: List<Pair<Int, Int>>) =
+        image.map { it.toMutableList() }.also { result ->
+            monsters.forEach { (monsterX, monsterY) ->
+                for (y in 0 until seaMosterHeight) {
+                    for (x in 0 until seaMosterWidth) {
+                        if (seaMonster[y][x] == '#') result[monsterY + y][monsterX + x] = 'O'
+                    }
+                }
+            }
+        }
 }
