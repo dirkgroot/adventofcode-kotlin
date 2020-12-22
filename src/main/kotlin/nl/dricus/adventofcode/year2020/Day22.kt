@@ -24,13 +24,13 @@ class Day22(input: Input) : Puzzle() {
 
     private tailrec fun playRecursive(
         player1: List<Int>, player2: List<Int>,
-        previousRounds1: List<List<Int>> = listOf(), previousRounds2: List<List<Int>> = listOf()
+        previousRounds2: List<List<Int>> = listOf()
     ): Pair<Int, List<Int>> {
         if (player1.isEmpty()) return 2 to player2
         if (player2.isEmpty()) return 1 to player1
 
-        if (previousRounds1.any { it == player1 }) return 1 to player1
-        if (previousRounds2.any { it == player2 }) return 1 to player1
+        val configuration = player1 + player2
+        if (previousRounds2.any { it == configuration }) return 1 to player1
 
         val (newDeck1, newDeck2) = if ((player1.size - 1) >= player1[0] && (player2.size - 1) >= player2[0])
             recursiveRound(player1, player2)
@@ -39,7 +39,7 @@ class Day22(input: Input) : Puzzle() {
 
         return playRecursive(
             newDeck1, newDeck2,
-            previousRounds1.plusElement(player1), previousRounds2.plusElement(player2)
+            previousRounds2.plusElement(player1 + player2)
         )
     }
 
