@@ -14,7 +14,7 @@ class Day23(val input: Input) : Puzzle() {
     override fun part1(): String {
         val index = createIndex(order, 9)
         play(index, order[0], 100)
-        return createPart1Result(index[0])
+        return createPart1Result(index[0].next)
     }
 
     private tailrec fun createPart1Result(head: Cup, acc: String = ""): String =
