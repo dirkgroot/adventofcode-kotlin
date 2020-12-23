@@ -4,9 +4,7 @@ import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
 import kotlin.math.max
 
-class Day23(input: Input) : Puzzle() {
-    private val firstCup by lazy { createCups(input.string()) }
-
+class Day23(val input: Input) : Puzzle() {
     private class Cup(val label: Int, next: Cup? = null) {
         var next: Cup = next ?: this
         override fun toString() = "label=$label"
@@ -18,8 +16,9 @@ class Day23(input: Input) : Puzzle() {
     }
 
     override fun part1(): String {
-        play(firstCup, createIndex(), 9, 100)
-        return createPart1Result(firstCup)
+        val head = createCups(input.string())
+        play(head, createIndex(head), 9, 100)
+        return createPart1Result(head)
     }
 
     private fun createPart1Result(head: Cup): String {
@@ -34,11 +33,12 @@ class Day23(input: Input) : Puzzle() {
     }
 
     override fun part2(): Long {
-        createMany(firstCup, firstCup, 1_000_000)
+        val head = createCups(input.string())
+        createMany(head, head, 1_000_000)
 
-        play(firstCup, createIndex(), 1_000_000, 10_000_000)
+        play(head, createIndex(head), 1_000_000, 10_000_000)
 
-        return createPart2Result(firstCup)
+        return createPart2Result(head)
     }
 
     private tailrec fun createPart2Result(head: Cup): Long =
@@ -55,9 +55,9 @@ class Day23(input: Input) : Puzzle() {
             }
         }
 
-    private fun createIndex() =
-        generateSequence(firstCup.label to firstCup) { (_, prevCup) ->
-            if (prevCup.next == firstCup) null else prevCup.next.label to prevCup.next
+    private fun createIndex(head: Cup) =
+        generateSequence(head.label to head) { (_, prevCup) ->
+            if (prevCup.next == head) null else prevCup.next.label to prevCup.next
         }.toMap()
 
     private fun play(head: Cup, index: Map<Int, Cup>, cupCount: Int, turns: Int) {
