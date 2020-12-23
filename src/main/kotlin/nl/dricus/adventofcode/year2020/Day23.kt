@@ -2,80 +2,76 @@ package nl.dricus.adventofcode.year2020
 
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
-import kotlin.math.max
 
 class Day23(val input: Input) : Puzzle() {
+    private val order by lazy { input.string().map { it - '0' - 1 } }
+
     private class Cup(val label: Int, next: Cup? = null) {
         var next: Cup = next ?: this
         override fun toString() = "label=$label"
     }
 
-    private fun createCups(labels: String): Cup {
-        val prep = labels.map { Cup(it - '0') }
-        return prep.onEachIndexed { index, cup -> cup.next = prep[(index + 1) % prep.size] }[0]
-    }
-
     override fun part1(): String {
-        val head = createCups(input.string())
-        play(head, createIndex(head), 9, 100)
-        return createPart1Result(head)
+        val index = createIndex(order, 9)
+        play(index, order[0], 9, 100)
+        return createPart1Result(index[0])
     }
 
     private fun createPart1Result(head: Cup): String {
         tailrec fun append(cup: Cup, acc: String): String =
-            if (cup.label == 1) acc
-            else append(cup.next, acc + cup.label)
+            if (cup.label == 0) acc
+            else append(cup.next, acc + (cup.label + 1))
 
         tailrec fun find(cup: Cup, label: Int): Cup =
-            if (cup.label == label) cup else find(cup.next, 1)
+            if (cup.label == label) cup else find(cup.next, label)
 
-        return append(find(head, 1).next, "")
+        return append(find(head, 0).next, "")
     }
 
     override fun part2(): Long {
-        val head = createCups(input.string())
-        createMany(head, head, 1_000_000)
+        val index = createIndex(order, 1_000_000)
 
-        play(head, createIndex(head), 1_000_000, 10_000_000)
+        play(index, order[0], 1_000_000, 10_000_000)
 
-        return createPart2Result(head)
+        return createPart2Result(index[0])
     }
 
     private tailrec fun createPart2Result(head: Cup): Long =
-        if (head.label == 1) head.next.label.toLong() * head.next.next.label.toLong()
+        if (head.label == 0) (head.next.label.toLong() + 1) * (head.next.next.label.toLong() + 1)
         else createPart2Result(head.next)
 
-    private tailrec fun createMany(head: Cup, current: Cup, count: Int, nextLabel: Int = 0): Cup =
-        when {
-            count == 1 -> head
-            current.next != head -> createMany(head, current.next, count - 1, max(nextLabel, current.label + 1))
-            else -> {
-                current.next = Cup(nextLabel, head)
-                createMany(head, current.next, count - 1, nextLabel + 1)
-            }
+    private fun createIndex(order: List<Int>, size: Int): Array<Cup> {
+        val result = Array(size) { index -> Cup(index) }
+        result.forEachIndexed { index, cup ->
+            val orderIndex = order.indexOf(cup.label)
+            if (orderIndex in 0..order.lastIndex)
+                cup.next = result[order[(orderIndex + 1) % order.size]]
+            else
+                cup.next = result[(index + 1) % size]
         }
+        if (size > order.size) {
+            result[order.last()].next = result[order.size]
+            result.last().next = result[order[0]]
+        }
+        return result
+    }
 
-    private fun createIndex(head: Cup) =
-        generateSequence(head.label to head) { (_, prevCup) ->
-            if (prevCup.next == head) null else prevCup.next.label to prevCup.next
-        }.toMap()
+    private fun play(index: Array<Cup>, first: Int, cupCount: Int, turns: Int) {
+        fun previousLabel(label: Int) = (label + cupCount - 1) % cupCount
 
-    private fun play(head: Cup, index: Map<Int, Cup>, cupCount: Int, turns: Int) {
-        fun previousLabel(label: Int) = if (label == 1) cupCount else label - 1
-
-        var current = head
+        var current = index[first]
         repeat(turns) {
             val pick1 = current.next
             val pick2 = pick1.next
             val pick3 = pick2.next
 
-            current.next = current.next.next.next.next
-
             var destinationLabel = previousLabel(current.label)
             while (pick1.label == destinationLabel || pick2.label == destinationLabel || pick3.label == destinationLabel) {
                 destinationLabel = previousLabel(destinationLabel)
             }
-            val destination = index[destinationLabel]!!
+            val destination = index[destinationLabel]
+
+            current.next = current.next.next.next.next
 
             val old = destination.next
             destination.next = pick1
