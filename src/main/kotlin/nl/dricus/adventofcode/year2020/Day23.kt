@@ -7,7 +7,7 @@ class Day23(val input: Input) : Puzzle() {
     private val order by lazy { input.string().map { it - '0' - 1 } }
 
     override fun part1(): String {
-        val index = createIndex2(order, 9)
+        val index = createIndex(order, 9)
         play(index, order[0], 100)
         return createPart1Result(index, index[0])
     }
@@ -17,12 +17,12 @@ class Day23(val input: Input) : Puzzle() {
         else createPart1Result(index, index[head], acc + (head + 1))
 
     override fun part2(): Long {
-        val index = createIndex2(order, 1_000_000)
+        val index = createIndex(order, 1_000_000)
         play(index, order[0], 10_000_000)
         return (index[0].toLong() + 1) * (index[index[0]].toLong() + 1)
     }
 
-    private fun createIndex2(initialCups: List<Int>, size: Int): IntArray {
+    private fun createIndex(initialCups: List<Int>, size: Int): IntArray {
         val allCups = IntArray(size) { index -> if (index < initialCups.size) initialCups[index] else index }
         val result = IntArray(size)
         allCups.forEachIndexed { index, label ->
