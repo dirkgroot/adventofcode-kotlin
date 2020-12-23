@@ -17,28 +17,15 @@ class Day23(val input: Input) : Puzzle() {
         return createPart1Result(index[0])
     }
 
-    private fun createPart1Result(head: Cup): String {
-        tailrec fun append(cup: Cup, acc: String): String =
-            if (cup.label == 0) acc
-            else append(cup.next, acc + (cup.label + 1))
-
-        tailrec fun find(cup: Cup, label: Int): Cup =
-            if (cup.label == label) cup else find(cup.next, label)
-
-        return append(find(head, 0).next, "")
-    }
+    private tailrec fun createPart1Result(head: Cup, acc: String = ""): String =
+        if (head.label == 0) acc
+        else createPart1Result(head.next, acc + (head.label + 1))
 
     override fun part2(): Long {
         val index = createIndex(order, 1_000_000)
-
         play(index, order[0], 10_000_000)
-
-        return createPart2Result(index[0])
+        return (index[0].next.label.toLong() + 1) * (index[0].next.next.label.toLong() + 1)
     }
-
-    private tailrec fun createPart2Result(head: Cup): Long =
-        if (head.label == 0) (head.next.label.toLong() + 1) * (head.next.next.label.toLong() + 1)
-        else createPart2Result(head.next)
 
     private fun createIndex(order: List<Int>, size: Int): Array<Cup> {
         val result = Array(size) { index -> Cup(index) }
