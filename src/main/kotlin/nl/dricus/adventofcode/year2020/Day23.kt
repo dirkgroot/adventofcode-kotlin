@@ -13,7 +13,7 @@ class Day23(val input: Input) : Puzzle() {
 
     override fun part1(): String {
         val index = createIndex(order, 9)
-        play(index, order[0], 9, 100)
+        play(index, order[0], 100)
         return createPart1Result(index[0])
     }
 
@@ -31,7 +31,7 @@ class Day23(val input: Input) : Puzzle() {
     override fun part2(): Long {
         val index = createIndex(order, 1_000_000)
 
-        play(index, order[0], 1_000_000, 10_000_000)
+        play(index, order[0], 10_000_000)
 
         return createPart2Result(index[0])
     }
@@ -56,8 +56,8 @@ class Day23(val input: Input) : Puzzle() {
         return result
     }
 
-    private fun play(index: Array<Cup>, first: Int, cupCount: Int, turns: Int) {
-        fun previousLabel(label: Int) = (label + cupCount - 1) % cupCount
+    private fun play(index: Array<Cup>, first: Int, turns: Int) {
+        fun previousLabel(label: Int) = (label + index.size - 1) % index.size
 
         var current = index[first]
         repeat(turns) {
