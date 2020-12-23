@@ -56,13 +56,13 @@ class Day23(val input: Input) : Puzzle() {
             while (pick1.label == destinationLabel || pick2.label == destinationLabel || pick3.label == destinationLabel) {
                 destinationLabel = previousLabel(destinationLabel)
             }
+
             val destination = index[destinationLabel]
-
-            current.next = current.next.next.next.next
-
             val old = destination.next
             destination.next = pick1
+            current.next = pick3.next
             pick3.next = old
+
             current = current.next
         }
     }
