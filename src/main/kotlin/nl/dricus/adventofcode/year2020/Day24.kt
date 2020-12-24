@@ -30,11 +30,11 @@ class Day24(input: Input) : Puzzle() {
                     adjacentBlack == 0 || adjacentBlack > 2
                 }
             val flipToBlack = blackTiles
-                .flatMap {
+                .flatMap { (x, y) ->
                     listOf(
-                        Tile(it.x - 1, it.z + 1), Tile(it.x + 1, it.z - 1),
-                        Tile(it.x - 1, it.z), Tile(it.x + 1, it.z),
-                        Tile(it.x, it.z - 1), Tile(it.x, it.z + 1)
+                        x - 1 to y + 1, x + 1 to y - 1,
+                        x - 1 to y, x + 1 to y,
+                        x to y - 1, x to y + 1
                     )
                 }
                 .distinct()
@@ -52,12 +52,14 @@ class Day24(input: Input) : Puzzle() {
         return blackTiles.count()
     }
 
-    private fun adjacentBlackTiles(blackTiles: MutableSet<Tile>, tile: Tile) =
-        blackTiles.count {
-            (it.x - tile.x == -1 && it.z - tile.z == 1) ||
-                    (it.x - tile.x == 1 && it.z - tile.z == -1) ||
-                    (it.z - tile.z == 0 && abs(it.x - tile.x) == 1) ||
-                    (abs(it.z - tile.z) == 1 && it.x - tile.x == 0)
+    private fun adjacentBlackTiles(blackTiles: MutableSet<Pair<Int, Int>>, tile: Pair<Int, Int>) =
+        tile.let { (tileX, tileY) ->
+            blackTiles.count { (x, y) ->
+                (x - tileX == -1 && y - tileY == 1) ||
+                        (x - tileX == 1 && y - tileY == -1) ||
+                        (y - tileY == 0 && abs(x - tileX) == 1) ||
+                        (abs(y - tileY) == 1 && x - tileX == 0)
+            }
         }
 
     private fun blackTiles() = flip.asSequence()
@@ -67,18 +69,15 @@ class Day24(input: Input) : Puzzle() {
         .filter { (_, count) -> count % 2 > 0 }
         .map { (coord, _) -> coord }
 
-    private data class Tile(val x: Int, val z: Int)
-
-    private tailrec fun getCoordinate(directions: List<String>, x: Int = 0, z: Int = 0): Tile {
-        return if (directions.isEmpty()) Tile(x, z)
+    private tailrec fun getCoordinate(directions: List<String>, x: Int = 0, y: Int = 0): Pair<Int, Int> =
+        if (directions.isEmpty()) x to y
         else when (directions[0]) {
-            "e" -> getCoordinate(directions.drop(1), x + 1, z)
-            "se" -> getCoordinate(directions.drop(1), x, z + 1)
-            "sw" -> getCoordinate(directions.drop(1), x - 1, z + 1)
-            "w" -> getCoordinate(directions.drop(1), x - 1, z)
-            "nw" -> getCoordinate(directions.drop(1), x, z - 1)
-            "ne" -> getCoordinate(directions.drop(1), x + 1, z - 1)
+            "e" -> getCoordinate(directions.drop(1), x + 1, y)
+            "se" -> getCoordinate(directions.drop(1), x, y + 1)
+            "sw" -> getCoordinate(directions.drop(1), x - 1, y + 1)
+            "w" -> getCoordinate(directions.drop(1), x - 1, y)
+            "nw" -> getCoordinate(directions.drop(1), x, y - 1)
+            "ne" -> getCoordinate(directions.drop(1), x + 1, y - 1)
             else -> throw IllegalStateException()
         }
-    }
 }
