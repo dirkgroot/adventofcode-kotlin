@@ -2,7 +2,6 @@ package nl.dricus.adventofcode.year2020
 
 import nl.dricus.adventofcode.util.Input
 import nl.dricus.adventofcode.util.Puzzle
-import kotlin.math.abs
 
 class Day24(input: Input) : Puzzle() {
     private val flip by lazy {
@@ -21,46 +20,41 @@ class Day24(input: Input) : Puzzle() {
     override fun part1() = blackTiles().size
 
     override fun part2(): Int {
-        val blackTiles = blackTiles().toMutableSet()
+        val blackTiles = blackTiles()
+        val initialWidth = blackTiles.maxOf { it.first } - blackTiles.minOf { it.first }
+        val initialHeight = blackTiles.maxOf { it.second } - blackTiles.minOf { it.second }
+        val turns = 100
+        val increase = turns * 2 + 4
+        val originX = (initialWidth + increase) / 2
+        val originY = (initialHeight + increase) / 2
+        val grid = Array(initialHeight + increase) { y ->
+            BooleanArray(initialWidth + increase) { x -> x - originX to y - originY in blackTiles }
+        }
 
-        repeat(100) {
-            val flipToWhite = blackTiles
-                .filter { tile ->
-                    val adjacentBlack = adjacentBlackTiles(blackTiles, tile)
-                    adjacentBlack == 0 || adjacentBlack > 2
-                }
-            val flipToBlack = blackTiles
-                .flatMap { (x, y) ->
-                    listOf(
-                        x - 1 to y + 1, x + 1 to y - 1,
-                        x - 1 to y, x + 1 to y,
-                        x to y - 1, x to y + 1
-                    )
-                }
-                .distinct()
-                .filter { tile ->
-                    if (tile in blackTiles) false else {
-                        val adjacentBlack = adjacentBlackTiles(blackTiles, tile)
-                        adjacentBlack == 2
+        (1..100).fold(initialWidth + 2 to initialHeight + 2) { (width, height), _ ->
+            val flip = (originY - height / 2..originY + height / 2).asSequence()
+                .flatMap { y -> (originX - width / 2..originX + width / 2).map { x -> x to y } }
+                .filter { (x, y) ->
+                    val adjacentBlackTileCount = adjacentBlackTiles(grid, x, y)
+                    if (grid[y][x]) {
+                        adjacentBlackTileCount == 0 || adjacentBlackTileCount > 2
+                    } else {
+                        adjacentBlackTileCount == 2
                     }
                 }
+                .toList()
 
-            blackTiles.addAll(flipToBlack)
-            blackTiles.removeAll(flipToWhite)
+            flip.forEach { (x, y) -> grid[y][x] = !grid[y][x] }
+
+            width + 2 to height + 2
         }
 
-        return blackTiles.count()
+        return grid.sumBy { it.count { isBlack -> isBlack } }
     }
 
-    private fun adjacentBlackTiles(blackTiles: MutableSet<Pair<Int, Int>>, tile: Pair<Int, Int>) =
-        tile.let { (tileX, tileY) ->
-            blackTiles.count { (x, y) ->
-                (x - tileX == -1 && y - tileY == 1) ||
-                        (x - tileX == 1 && y - tileY == -1) ||
-                        (y - tileY == 0 && abs(x - tileX) == 1) ||
-                        (abs(y - tileY) == 1 && x - tileX == 0)
-            }
-        }
+    private fun adjacentBlackTiles(grid: Array<BooleanArray>, x: Int, y: Int) =
+        listOf(x - 1 to y + 1, x + 1 to y - 1, x - 1 to y, x + 1 to y, x to y + 1, x to y - 1)
+            .count { (tx, ty) -> grid[ty][tx] }
 
     private fun blackTiles() = flip.asSequence()
         .map { getCoordinate(it) }
