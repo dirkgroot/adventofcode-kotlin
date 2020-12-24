@@ -9,13 +9,12 @@ class Day24(input: Input) : Puzzle() {
     }
 
     private val directionRegex = "(e|se|sw|w|nw|ne)".toRegex()
-    private tailrec fun parseRoute(route: String, directions: List<String> = listOf()): List<String> {
-        return if (route == "") directions
+    private tailrec fun parseRoute(route: String, directions: List<String> = listOf()): List<String> =
+        if (route == "") directions
         else {
             val match = directionRegex.find(route)!!
             parseRoute(route.substring(match.groupValues[1].length), directions + match.groupValues[1])
         }
-    }
 
     override fun part1() = blackTiles().size
 
@@ -34,9 +33,7 @@ class Day24(input: Input) : Puzzle() {
 
         repeat(turns) {
             val flipToBlack = blackTiles.asSequence()
-                .flatMap { (x, y) ->
-                    listOf(x - 1 to y + 1, x + 1 to y - 1, x - 1 to y, x + 1 to y, x to y + 1, x to y - 1)
-                }
+                .flatMap { (x, y) -> adjacentTiles(x, y) }
                 .distinct()
                 .filter { (x, y) -> !grid[y][x] && adjacentBlackTiles(grid, x, y) == 2 }
                 .toList()
@@ -57,8 +54,10 @@ class Day24(input: Input) : Puzzle() {
     }
 
     private fun adjacentBlackTiles(grid: Array<BooleanArray>, x: Int, y: Int) =
+        adjacentTiles(x, y).count { (tx, ty) -> grid[ty][tx] }
+
+    private fun adjacentTiles(x: Int, y: Int) =
         listOf(x - 1 to y + 1, x + 1 to y - 1, x - 1 to y, x + 1 to y, x to y + 1, x to y - 1)
-            .count { (tx, ty) -> grid[ty][tx] }
 
     private fun blackTiles() = flip.asSequence()
         .map { getCoordinate(it) }
