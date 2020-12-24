@@ -33,24 +33,24 @@ class Day24(input: Input) : Puzzle() {
         }
 
         repeat(turns) {
-            val flip1 = blackTiles.asSequence()
+            val whiteTilesToFlip = blackTiles.asSequence()
                 .flatMap { (x, y) ->
                     listOf(x - 1 to y + 1, x + 1 to y - 1, x - 1 to y, x + 1 to y, x to y + 1, x to y - 1)
                 }
                 .distinct()
                 .filter { (x, y) -> !grid[y][x] && adjacentBlackTiles(grid, x, y) == 2 }
                 .toList()
-            val flip2 = blackTiles.asSequence()
+            val blackTilesToFlip = blackTiles.asSequence()
                 .filter { (x, y) ->
                     val adjacentBlackTileCount = adjacentBlackTiles(grid, x, y)
                     adjacentBlackTileCount == 0 || adjacentBlackTileCount > 2
                 }
                 .toList()
 
-            blackTiles.addAll(flip1)
-            flip1.forEach { (x, y) -> grid[y][x] = true }
-            blackTiles.removeAll(flip2)
-            flip2.forEach { (x, y) -> grid[y][x] = false }
+            blackTiles.addAll(whiteTilesToFlip)
+            whiteTilesToFlip.forEach { (x, y) -> grid[y][x] = true }
+            blackTiles.removeAll(blackTilesToFlip)
+            blackTilesToFlip.forEach { (x, y) -> grid[y][x] = false }
         }
 
         return grid.sumBy { it.count { isBlack -> isBlack } }
