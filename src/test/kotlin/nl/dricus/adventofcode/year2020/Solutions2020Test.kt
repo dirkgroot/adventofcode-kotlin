@@ -3,7 +3,7 @@ package nl.dricus.adventofcode.year2020
 import nl.dricus.adventofcode.base.AbstractYearSolutionsTest
 import nl.dricus.adventofcode.util.ClasspathResourceInput
 
-class SolutionsTest : AbstractYearSolutionsTest() {
+class Solutions2020Test : AbstractYearSolutionsTest() {
     override val testCases = listOf(
         TestCase(Day01(ClasspathResourceInput(2020, 1)), 365619, 236873508),
         TestCase(Day02(ClasspathResourceInput(2020, 2)), 424, 747),
