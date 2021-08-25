@@ -18,7 +18,7 @@ class Day02(input: Input, replaceInput: Boolean = true) : Puzzle() {
     else
         readProgram(input)
 
-    private fun readProgram(input: Input) = input.lines()[0]
+    private fun readProgram(input: Input) = input.string()
         .split(",")
         .map(String::toInt)
 
