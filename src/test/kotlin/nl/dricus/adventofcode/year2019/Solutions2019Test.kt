@@ -5,6 +5,7 @@ import nl.dricus.adventofcode.util.ClasspathResourceInput
 
 class Solutions2019Test : AbstractYearSolutionsTest() {
     override val testCases = listOf(
+        TestCase(Day01(ClasspathResourceInput(2019, 1))),
         TestCase(Day02(ClasspathResourceInput(2019, 2)), 6730673),
     )
 }
