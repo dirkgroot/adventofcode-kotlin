@@ -142,14 +142,16 @@ class Day18(input: Input) : Puzzle() {
         fun split(number: Node): Node {
             val nodes = allNodes(number)
 
-            nodes.filterIsInstance<Node.Intermediate>()
-                .firstOrNull { it.left.splits || it.right.splits }
-                ?.let { splitParent ->
-                    if (splitParent.left.splits)
-                        splitParent.left = (splitParent.left as Node.Leaf).split()
-                    else if (splitParent.right.splits)
-                        splitParent.right = (splitParent.right as Node.Leaf).split()
-                }
+            nodes.firstOrNull { it.splits }?.let { split ->
+                nodes.filterIsInstance<Node.Intermediate>()
+                    .first { it.left === split || it.right === split }
+                    .let { splitParent ->
+                        if (splitParent.left.splits)
+                            splitParent.left = (splitParent.left as Node.Leaf).split()
+                        else if (splitParent.right.splits)
+                            splitParent.right = (splitParent.right as Node.Leaf).split()
+                    }
+            }
 
             return number
         }
@@ -176,7 +178,7 @@ class Day18(input: Input) : Puzzle() {
                 val nodes = allNodes(n).toList()
                 val firstExplode = nodes.firstOrNull { it.explodes }
                 val firstSplit = nodes.firstOrNull { it.splits }
-                println("${++count} $number (ex: $firstExplode | sp: $firstSplit)")
+                println("${String.format("%03d", ++count)} $number (ex: $firstExplode | sp: $firstSplit)")
             }
 
 //            debug(number)
