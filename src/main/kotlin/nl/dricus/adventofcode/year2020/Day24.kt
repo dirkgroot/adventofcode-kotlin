@@ -46,11 +46,11 @@ class Day24(input: Input) : Puzzle() {
 
             blackTiles.addAll(flipToBlack)
             flipToBlack.forEach { (x, y) -> grid[y][x] = true }
-            blackTiles.removeAll(flipToWhite)
+            blackTiles.removeAll(flipToWhite.toSet())
             flipToWhite.forEach { (x, y) -> grid[y][x] = false }
         }
 
-        return grid.sumBy { it.count { isBlack -> isBlack } }
+        return grid.sumOf { it.count { isBlack -> isBlack } }
     }
 
     private fun adjacentBlackTiles(grid: Array<BooleanArray>, x: Int, y: Int) =

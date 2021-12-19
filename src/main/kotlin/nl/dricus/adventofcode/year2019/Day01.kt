@@ -7,10 +7,10 @@ class Day01(input: Input) : Puzzle() {
     private val moduleMasses = input.lines()
         .map(String::toInt)
 
-    override fun part1() = moduleMasses.sumBy { fuelRequired(it) }
+    override fun part1() = moduleMasses.sumOf { fuelRequired(it) }
 
     override fun part2(): Any {
-        return moduleMasses.sumBy {
+        return moduleMasses.sumOf {
             generateSequence(fuelRequired(it)) { previous ->
                 val next = fuelRequired(previous)
                 if (next <= 0) null

@@ -73,5 +73,5 @@ class Day11(input: Input) : Puzzle() {
         neighbors.count { (r, c) -> state[r][c] == occupied } >= max
 
     private fun List<List<Char>>.countOccupiedSeats() =
-        sumBy { row -> row.count { it == occupied } }
+        sumOf { row -> row.count { it == occupied } }
 }
