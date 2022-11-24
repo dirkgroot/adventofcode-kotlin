@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "1.7.21"
 }
 
-group = "nl.dricus"
+group = "nl.dirkgroot"
 version = "1.0-SNAPSHOT"
 
 repositories {
