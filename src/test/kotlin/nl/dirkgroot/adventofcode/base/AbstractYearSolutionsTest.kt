@@ -1,7 +1,7 @@
 package nl.dirkgroot.adventofcode.base
 
 import nl.dirkgroot.adventofcode.util.Puzzle
-import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 import kotlin.test.assertEquals
 import kotlin.time.ExperimentalTime
@@ -18,7 +18,7 @@ abstract class AbstractYearSolutionsTest {
         val name = testCase.puzzle::class.java.simpleName
 
         listOf(
-            DynamicTest.dynamicTest("$name part 1") {
+            dynamicTest("$name part 1") {
                 val timedValue = measureTimedValue { testCase.puzzle.part1() }
 
                 if (testCase.part1Solution != null)
@@ -28,7 +28,7 @@ abstract class AbstractYearSolutionsTest {
 
                 println("$name part 1 took ${timedValue.duration}")
             },
-            DynamicTest.dynamicTest("$name part 2") {
+            dynamicTest("$name part 2") {
                 val timedValue = measureTimedValue { testCase.puzzle.part2() }
 
                 if (testCase.part2Solution != null)
