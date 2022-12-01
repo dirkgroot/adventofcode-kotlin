@@ -27,13 +27,23 @@ class Day24 : Puzzle() {
 
     private fun findFirstValid(upTo: Boolean): Long {
         var minZ = 99999999999999L
+        val step1Cache = mutableSetOf<Long>()
+        var step1Hits = 0L
+        val step2Cache = mutableSetOf<Long>()
+        var step2Hits = 0L
         return findZs(functions1, 0L, upTo)
             .flatMap { (z1, c1) ->
-                findZs(functions2, z1, upTo).flatMap { (z2, c2) ->
-                    findZs(functions3, z2, upTo).map { (z3, c3) ->
-                        z3 to (c1 * 100000000L) + (c2 * 10000) + c3
+                if (!step1Cache.contains(z1)) {
+                    step1Cache.add(z1)
+                    findZs(functions2, z1, upTo).flatMap { (z2, c2) ->
+                        if (!step2Cache.contains(z2)) {
+                            step2Cache.add(z2)
+                            findZs(functions3, z2, upTo).map { (z3, c3) ->
+                                z3 to (c1 * 100000000L) + (c2 * 10000) + c3
+                            }
+                        } else emptySequence<Pair<Long, Long>>().also { step1Hits++ }
                     }
-                }
+                } else emptySequence<Pair<Long, Long>>().also { step2Hits++ }
             }
             .onEach { (z, c) ->
                 if (z < minZ) {
@@ -44,6 +54,12 @@ class Day24 : Puzzle() {
             .filter { (z, _) -> z == 0L }
             .map { (_, c) -> c }
             .first()
+            .also {
+                println("cache1: ${step1Cache.size}")
+                println("hits1: $step1Hits")
+                println("cache2: ${step2Cache.size}")
+                println("hits2: $step2Hits")
+            }
     }
 
     private fun findZs(fs: List<(Long, Long) -> Long>, initialZ: Long, upTo: Boolean): Sequence<Pair<Long, Long>> {
