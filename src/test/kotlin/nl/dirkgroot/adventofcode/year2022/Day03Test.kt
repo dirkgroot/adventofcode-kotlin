@@ -7,7 +7,7 @@ import nl.dirkgroot.adventofcode.util.*
 private const val YEAR = 2022
 private const val DAY = 3
 
-private fun solution1(input: String) = input.linesSequence()
+private fun solution1(input: String) = input.lineSequence()
     .splitCompartments()
     .totalPriorityOfOverlappingItems()
 
@@ -15,7 +15,7 @@ private fun Sequence<String>.splitCompartments() = this
     .map { it.chunked(it.length / 2) }
     .map { it.map { compartment -> compartment.toSet() } }
 
-private fun solution2(input: String) = input.linesSequence()
+private fun solution2(input: String) = input.lineSequence()
     .splitGroups()
     .totalPriorityOfOverlappingItems()
 
