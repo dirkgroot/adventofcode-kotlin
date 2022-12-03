@@ -6,16 +6,15 @@ import nl.dirkgroot.adventofcode.util.Puzzle
 class Day03(input: Input) : Puzzle() {
     private val rucksacks = input.lines()
 
-    override fun part1() = rucksacks.map { rucksack ->
-        rucksack.chunked(rucksack.length / 2)
-            .map { it.toSet() }
-            .reduce { acc, half -> acc.intersect(half) }
-    }.sumOf { priority(it.single()) }
+    override fun part1() = rucksacks
+        .map { rucksack -> rucksack.chunked(rucksack.length / 2).map { it.toSet() } }
+        .let { overlappingItems -> sumOfPriorities(overlappingItems) }
 
-    override fun part2() = rucksacks.chunked(3).map { group ->
-        group.map { rucksack -> rucksack.toSet() }
-            .reduce { acc, rucksack -> acc.intersect(rucksack) }
-    }.sumOf { priority(it.single()) }
+    override fun part2() = rucksacks.chunked(3)
+        .map { group -> group.map { rucksack -> rucksack.toSet() } }
+        .let { overlappingItems -> sumOfPriorities(overlappingItems) }
 
-    private fun priority(item: Char) = if (item >= 'a') item - 'a' + 1 else item - 'A' + 27
+    private fun sumOfPriorities(overlappingItems: List<List<Set<Char>>>) = overlappingItems
+        .map { it.reduce { acc, rucksack -> acc.intersect(rucksack) }.single() }
+        .sumOf { if (it >= 'a') it - 'a' + 1 else it - 'A' + 27 }
 }
