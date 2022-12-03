@@ -1,53 +1,34 @@
 package nl.dirkgroot.adventofcode.year2022
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import nl.dirkgroot.adventofcode.util.ClasspathResourceInput
-import nl.dirkgroot.adventofcode.util.StringInput
-import org.junit.jupiter.api.Test
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import nl.dirkgroot.adventofcode.util.input
+import nl.dirkgroot.adventofcode.util.invokedWith
 
-class Day02Test {
-    @Test
-    fun example1() {
-        val score = Day02(
-            StringInput(
-                """
-                    A Y
-                    B X
-                    C Z
-                """.trimIndent()
-            )
-        ).part1()
+private const val YEAR = 2022
+private const val DAY = 2
 
-        assertThat(score).isEqualTo(15)
-    }
+private fun solution1(input: String) = input.lineSequence().totalScore(0)
+private fun solution2(input: String) = input.lineSequence().totalScore(1)
 
-    @Test
-    fun example2() {
-        val score = Day02(
-            StringInput(
-                """
-                    A Y
-                    B X
-                    C Z
-                """.trimIndent()
-            )
-        ).part2()
+private fun Sequence<String>.totalScore(part: Int) = fold(0L) { acc, line -> acc + scores.getValue(line)[part] }
 
-        assertThat(score).isEqualTo(12)
-    }
+private val scores = mapOf(
+    "A X" to arrayOf(4L, 3L), "A Y" to arrayOf(8L, 4L), "A Z" to arrayOf(3L, 8L),
+    "B X" to arrayOf(1L, 1L), "B Y" to arrayOf(5L, 5L), "B Z" to arrayOf(9L, 9L),
+    "C X" to arrayOf(7L, 2L), "C Y" to arrayOf(2L, 6L), "C Z" to arrayOf(6L, 7L),
+)
 
-    @Test
-    fun part1() {
-        val score = Day02(ClasspathResourceInput(2022, 2)).part1()
-        println(score)
-        assertThat(score).isEqualTo(13484L)
-    }
+class Day02Test : StringSpec({
+    "example part 1" { ::solution1 invokedWith exampleInput shouldBe 15L }
+    "part 1 solution" { ::solution1 invokedWith input(YEAR, DAY) shouldBe 13484L }
+    "example part 2" { ::solution2 invokedWith exampleInput shouldBe 12L }
+    "part 2 solution" { ::solution2 invokedWith input(YEAR, DAY) shouldBe 13433L }
+})
 
-    @Test
-    fun part2() {
-        val score = Day02(ClasspathResourceInput(2022, 2)).part2()
-        println(score)
-        assertThat(score).isEqualTo(13433L)
-    }
-}
+private val exampleInput =
+    """
+        A Y
+        B X
+        C Z
+    """.trimIndent()
