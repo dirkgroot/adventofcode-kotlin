@@ -5,15 +5,17 @@ import io.kotest.matchers.shouldBe
 import nl.dirkgroot.adventofcode.util.input
 import nl.dirkgroot.adventofcode.util.invokedWith
 
-private const val YEAR = 2022
-private const val DAY = 1
-
 private fun solution1(input: String) = calories(input).max()
 private fun solution2(input: String) = calories(input).sortedDescending().take(3).sum()
 
 private fun calories(input: String) = input.split("\n\n")
     .map { elf -> elf.split("\n").map { calories -> calories.toLong() } }
     .map { elf -> elf.sum() }
+
+//===============================================================================================\\
+
+private const val YEAR = 2022
+private const val DAY = 1
 
 class Day01Test : StringSpec({
     "example part 1" { ::solution1 invokedWith exampleInput shouldBe 24000L }

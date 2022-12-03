@@ -1,6 +1,15 @@
 package nl.dirkgroot.adventofcode.util
 
-fun input(year: Int, day: Int) = readFromClassPath(year, day).readText()
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+
+@OptIn(ExperimentalTime::class)
+fun input(year: Int, day: Int) = measureTimedValue { readFromClassPath(year, day).readText() }
+    .let {
+        println("Year $year, day $day")
+        println("I/O:      ${it.duration}")
+        it.value
+    }
 
 private fun readFromClassPath(year: Int, day: Int) = object {}.javaClass
     .getResourceAsStream("/inputs/${year}/${java.lang.String.format("%02d", day)}.txt")

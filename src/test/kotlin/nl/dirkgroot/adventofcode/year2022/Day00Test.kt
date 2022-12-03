@@ -5,11 +5,13 @@ import io.kotest.matchers.shouldBe
 import nl.dirkgroot.adventofcode.util.input
 import nl.dirkgroot.adventofcode.util.invokedWith
 
-private const val YEAR = 2022
-private const val DAY = 0
-
 private fun solution1(input: String): Long = 0L
 private fun solution2(input: String): Long = 0L
+
+//===============================================================================================\\
+
+private const val YEAR = 2022
+private const val DAY = 0
 
 class Day00Test : StringSpec({
     "example part 1" { ::solution1 invokedWith exampleInput shouldBe 0L }

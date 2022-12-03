@@ -5,9 +5,6 @@ import io.kotest.matchers.shouldBe
 import nl.dirkgroot.adventofcode.util.input
 import nl.dirkgroot.adventofcode.util.invokedWith
 
-private const val YEAR = 2022
-private const val DAY = 2
-
 private fun solution1(input: String) = input.lineSequence().totalScore(0)
 private fun solution2(input: String) = input.lineSequence().totalScore(1)
 
@@ -18,6 +15,11 @@ private val scores = mapOf(
     "B X" to arrayOf(1L, 1L), "B Y" to arrayOf(5L, 5L), "B Z" to arrayOf(9L, 9L),
     "C X" to arrayOf(7L, 2L), "C Y" to arrayOf(2L, 6L), "C Z" to arrayOf(6L, 7L),
 )
+
+//===============================================================================================\\
+
+private const val YEAR = 2022
+private const val DAY = 2
 
 class Day02Test : StringSpec({
     "example part 1" { ::solution1 invokedWith exampleInput shouldBe 15L }

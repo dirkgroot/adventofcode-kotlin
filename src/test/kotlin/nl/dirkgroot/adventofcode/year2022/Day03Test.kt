@@ -4,9 +4,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import nl.dirkgroot.adventofcode.util.*
 
-private const val YEAR = 2022
-private const val DAY = 3
-
 private fun solution1(input: String) = input.lineSequence()
     .splitCompartments()
     .totalPriorityOfOverlappingItems()
@@ -27,6 +24,11 @@ private fun Sequence<List<Set<Char>>>.totalPriorityOfOverlappingItems() = this
     .map { it.reduce { acc, rucksack -> acc.intersect(rucksack) } }
     .map { it.single() }
     .sumOf { if (it >= 'a') it - 'a' + 1 else it - 'A' + 27 }
+
+//===============================================================================================\\
+
+private const val YEAR = 2022
+private const val DAY = 3
 
 class Day03Test : StringSpec({
     "example part 1" { ::solution1 invokedWith exampleInput shouldBe 157 }
