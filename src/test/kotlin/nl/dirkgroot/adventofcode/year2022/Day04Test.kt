@@ -5,15 +5,13 @@ import io.kotest.matchers.shouldBe
 import nl.dirkgroot.adventofcode.util.input
 import nl.dirkgroot.adventofcode.util.invokedWith
 
-private fun solution1(input: String) = input.parseRanges().countCompleteOverlaps()
+private fun solution1(input: String) = input.parseRanges().count { (a, b) -> a isInside b || b isInside a }
 
-private fun Sequence<Pair<LongRange, LongRange>>.countCompleteOverlaps() =
-    count { (a, b) -> (a.first <= b.first && a.last >= b.last) || (b.first <= a.first && b.last >= a.last) }
+private infix fun LongRange.isInside(b: LongRange) = first in b && last in b
 
-private fun solution2(input: String) = input.parseRanges().countPartialOverlaps()
+private fun solution2(input: String) = input.parseRanges().count { (a, b) -> a overlapsWith b }
 
-private fun Sequence<Pair<LongRange, LongRange>>.countPartialOverlaps() =
-    count { (a, b) -> (a.first <= b.first && a.last >= b.first) || (b.first <= a.first && b.last >= a.first) }
+private infix fun LongRange.overlapsWith(b: LongRange) = first in b || last in b || b.first in this || b.last in this
 
 private fun String.parseRanges() = lineSequence()
     .map { it.split(",") }
