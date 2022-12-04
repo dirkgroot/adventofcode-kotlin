@@ -15,8 +15,13 @@ private fun solution2(input: String) = input.parseRanges().countPartialOverlaps(
 private fun Sequence<Pair<LongRange, LongRange>>.countPartialOverlaps() =
     count { (a, b) -> (a.first <= b.first && a.last >= b.first) || (b.first <= a.first && b.last >= a.first) }
 
-private fun String.parseRanges() = lineSequence().map { it.split(",") }.map { (a, b) -> a.toRange() to b.toRange() }
-private fun String.toRange() = split("-").map { it.toLong() }.let { (a, b) -> a..b }
+private fun String.parseRanges() = lineSequence()
+    .map { it.split(",") }
+    .map { (a, b) -> a.toRange() to b.toRange() }
+
+private fun String.toRange() = split("-")
+    .map { it.toLong() }
+    .let { (a, b) -> a..b }
 
 //===============================================================================================\\
 
