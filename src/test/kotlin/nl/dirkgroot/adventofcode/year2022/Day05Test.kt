@@ -9,8 +9,8 @@ import nl.dirkgroot.adventofcode.util.invokedWith
 private fun solution1(input: String) = parseInput(input).let { (stacks, procedure) ->
     procedure.forEach { (number, from, to) ->
         repeat(number) {
-            val crate = stacks[from - 1].removeFirst()
-            stacks[to - 1].add(0, crate)
+            val crate = stacks[from].removeFirst()
+            stacks[to].add(0, crate)
         }
     }
     stacks.joinToString("") { it.first().toString() }
@@ -18,9 +18,9 @@ private fun solution1(input: String) = parseInput(input).let { (stacks, procedur
 
 private fun solution2(input: String) = parseInput(input).let { (stacks, procedure) ->
     procedure.forEach { (number, from, to) ->
-        val crates = stacks[from - 1].take(number)
-        repeat(number) { stacks[from - 1].removeFirst() }
-        stacks[to - 1].addAll(0, crates)
+        val crates = stacks[from].take(number)
+        repeat(number) { stacks[from].removeFirst() }
+        stacks[to].addAll(0, crates)
     }
     stacks.joinToString("") { it.first().toString() }
 }
@@ -36,7 +36,7 @@ private fun parseInput(input: String) = input.split("(\\s+\\d+\\s*)+\\n\\n".toRe
     }
     stacks to procedure.lines().map {
         "move (\\d+) from (\\d+) to (\\d+)".toRegex().matchEntire(it)?.let { match ->
-            arrayOf(match.groupValues[1].toInt(), match.groupValues[2].toInt(), match.groupValues[3].toInt())
+            arrayOf(match.groupValues[1].toInt(), match.groupValues[2].toInt() - 1, match.groupValues[3].toInt() - 1)
         } ?: throw IllegalStateException()
     }
 }
@@ -55,10 +55,10 @@ class Day05Test : StringSpec({
             listOf('P'),
         )
         procedure shouldContainExactly listOf(
-            arrayOf(1, 2, 1),
-            arrayOf(3, 1, 3),
-            arrayOf(2, 2, 1),
-            arrayOf(1, 1, 2),
+            arrayOf(1, 1, 0),
+            arrayOf(3, 0, 2),
+            arrayOf(2, 1, 0),
+            arrayOf(1, 0, 1),
         )
     }
     "example part 1" { ::solution1 invokedWith exampleInput shouldBe "CMZ" }
