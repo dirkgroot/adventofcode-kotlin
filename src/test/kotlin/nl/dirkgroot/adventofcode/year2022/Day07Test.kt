@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import nl.dirkgroot.adventofcode.util.input
 import nl.dirkgroot.adventofcode.util.invokedWith
-import java.nio.file.Path
 import java.util.*
 
 private fun solution1(input: String): Long {
@@ -15,16 +14,16 @@ private fun solution1(input: String): Long {
 
 private fun solution2(input: String): Long {
     val directories = findDirectories(input)
-    val rootSize = directories.getValue(Path.of("/"))
+    val rootSize = directories.getValue("/")
 
     return directories.entries.map { (_, size) -> size }.sorted()
         .first { 70000000L - rootSize + it >= 30000000L }
 }
 
-private fun findDirectories(input: String): Map<Path, Long> {
-    val stack = Stack<Pair<Path, Long>>()
-    val directories = mutableMapOf<Path, Long>()
-    var currentDir = Path.of("/")
+private fun findDirectories(input: String): Map<String, Long> {
+    val stack = Stack<Pair<String, Long>>()
+    val directories = mutableMapOf<String, Long>()
+    var currentDir = "/"
     var currentSize = 0L
 
     input.lineSequence().drop(1)
@@ -40,7 +39,7 @@ private fun findDirectories(input: String): Map<Path, Long> {
                 val newDir = entry.substring(5)
                 stack.push(currentDir to currentSize)
                 currentSize = 0L
-                currentDir = currentDir.resolve(newDir)
+                currentDir += "/$newDir"
             } else
                 currentSize += entry.takeWhile { it != ' ' }.toLong()
         }
