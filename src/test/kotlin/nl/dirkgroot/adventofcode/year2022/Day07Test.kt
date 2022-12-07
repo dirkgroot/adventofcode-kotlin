@@ -21,34 +21,29 @@ private fun solution2(input: String): Long {
         .first { 70000000L - rootSize + it >= 30000000L }
 }
 
-private fun findDirectories(input: String): MutableMap<Path, Long> {
+private fun findDirectories(input: String): Map<Path, Long> {
     val stack = Stack<Pair<Path, Long>>()
     val directories = mutableMapOf<Path, Long>()
     var currentDir = Path.of("/")
     var currentSize = 0L
 
-    input.lineSequence().drop(1).forEach { entry ->
-        if (entry.startsWith("$ cd")) {
-            when (val newDir = entry.substring(5)) {
-                ".." -> {
-                    directories[currentDir] = currentSize
+    input.lineSequence().drop(1)
+        .filter { it.matches("(\\$ cd|\\d+) .*".toRegex()) }
+        .forEach { entry ->
+            if (entry == "$ cd ..") {
+                directories[currentDir] = currentSize
 
-                    val (dir, size) = stack.pop()
-                    currentDir = dir
-                    currentSize += size
-                }
-                else -> {
-                    stack.push(currentDir to currentSize)
-                    currentSize = 0L
-                    currentDir = currentDir.resolve(newDir)
-                }
-            }
-        } else if (entry != "$ ls") {
-            entry.takeWhile { it != ' ' }.toLongOrNull()?.let { fileSize ->
-                currentSize += fileSize
-            }
+                val (dir, size) = stack.pop()
+                currentDir = dir
+                currentSize += size
+            } else if (entry.startsWith("$ cd")) {
+                val newDir = entry.substring(5)
+                stack.push(currentDir to currentSize)
+                currentSize = 0L
+                currentDir = currentDir.resolve(newDir)
+            } else
+                currentSize += entry.takeWhile { it != ' ' }.toLong()
         }
-    }
     directories[currentDir] = currentSize
     while (stack.isNotEmpty()) {
         val (dir, size) = stack.pop()
