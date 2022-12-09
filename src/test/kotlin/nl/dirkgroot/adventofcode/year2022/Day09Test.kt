@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import nl.dirkgroot.adventofcode.util.input
 import nl.dirkgroot.adventofcode.util.invokedWith
+import kotlin.math.sign
 
 private fun solution1(input: String) = doMotions(input, 2)
 private fun solution2(input: String) = doMotions(input, 10)
@@ -25,7 +26,7 @@ private fun doMotions(input: String, knotCount: Int): Int {
     return tailVisited.size
 }
 
-private data class Knot(var x: Int, var y: Int) {
+private class Knot(var x: Int, var y: Int) {
     private val deltas = mapOf("R" to (1 to 0), "U" to (0 to 1), "L" to (-1 to 0), "D" to (0 to -1))
 
     fun move(direction: String) {
@@ -40,14 +41,8 @@ private data class Knot(var x: Int, var y: Int) {
 
         if (dx in -1..1 && dy in -1..1) return
 
-        when {
-            dx > 0 -> x++
-            dx < 0 -> x--
-        }
-        when {
-            dy > 0 -> y++
-            dy < 0 -> y--
-        }
+        x += dx.sign
+        y += dy.sign
     }
 }
 
