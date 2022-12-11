@@ -28,27 +28,26 @@ private fun round(monkeys: List<Monkey>, divideBy: Long, modulo: Long) {
 private fun List<Monkey>.monkeyBusiness() = map { it.inspectCount }.sortedDescending().take(2).reduce(Long::times)
 
 private data class Monkey(
-    val items: MutableList<Item>,
+    val items: MutableList<Long>,
     val operation: (Long) -> Long,
     val divisibleBy: Long,
     val ifTrue: Int,
     val ifFalse: Int,
     var inspectCount: Long = 0L
 ) {
-    fun inspect(divideBy: Long, modulo: Long): Pair<Item, Int> {
+    fun inspect(divideBy: Long, modulo: Long): Pair<Long, Int> {
         inspectCount++
 
-        val item = items.removeAt(0)
-        item.worryLevel = operation(item.worryLevel) / divideBy % modulo
+        val item = operation(items.removeAt(0)) / divideBy % modulo
 
-        return if (item.worryLevel % divisibleBy == 0L) item to ifTrue
+        return if (item % divisibleBy == 0L) item to ifTrue
         else item to ifFalse
     }
 
     companion object {
         fun parse(input: String): Monkey {
             val lines = input.lines()
-            val items = lines[1].drop(18).split(", ").map { Item(it.toLong()) }.toMutableList()
+            val items = lines[1].drop(18).split(", ").map { it.toLong() }.toMutableList()
             val operation = lines[2].drop(23).split(" ").let {
                 if (it[1] == "old") {
                     if (it[0] == "*") { old: Long -> old * old }
@@ -67,8 +66,6 @@ private data class Monkey(
         }
     }
 }
-
-private data class Item(var worryLevel: Long)
 
 //===============================================================================================\\
 
