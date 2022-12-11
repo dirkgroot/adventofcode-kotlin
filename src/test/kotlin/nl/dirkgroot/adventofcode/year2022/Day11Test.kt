@@ -47,22 +47,17 @@ private data class Monkey(
     companion object {
         fun parse(input: String): Monkey {
             val lines = input.lines()
-            val items = lines[1].drop(18).split(", ").map { it.toLong() }.toMutableList()
-            val operation = lines[2].drop(23).split(" ").let {
-                if (it[1] == "old") {
-                    if (it[0] == "*") { old: Long -> old * old }
-                    else { old: Long -> old + old }
-                } else {
-                    val num = it[1].toLong()
-                    if (it[0] == "*") { old: Long -> old * num }
-                    else { old: Long -> old + num }
-                }
-            }
-            val divisibleBy = lines[3].drop(21).toLong()
-            val ifTrue = lines[4].drop(29).toInt()
-            val ifFalse = lines[5].drop(30).toInt()
-
-            return Monkey(items, operation, divisibleBy, ifTrue, ifFalse)
+            return Monkey(
+                items = lines[1].drop(18).split(", ").map { it.toLong() }.toMutableList(),
+                operation = lines[2].drop(23).split(" ").let {
+                    if (it[1] == "old") { old: Long -> old * old }
+                    else if (it[0] == "*") it[1].toLong()::times
+                    else it[1].toLong()::plus
+                },
+                divisibleBy = lines[3].drop(21).toLong(),
+                ifTrue = lines[4].drop(29).toInt(),
+                ifFalse = lines[5].drop(30).toInt()
+            )
         }
     }
 }
