@@ -55,7 +55,7 @@ private class Grid(input: String) {
     }
 
     private fun neighbors(x: Int, y: Int) =
-        listOf(x - 1 to y, x + 1 to y, x to y - 1, x to y + 1)
+        sequenceOf(x - 1 to y, x + 1 to y, x to y - 1, x to y + 1)
             .filter { (x, y) -> x in cells[0].indices && y in cells.indices }
             .filter { (nx, ny) -> cells[ny][nx] - cells[y][x] <= 1 }
 }
