@@ -27,7 +27,7 @@ private fun parseEntry(input: String) = "\\[|]|\\d+".toRegex().findAll(input)
 private fun parse(tokens: Iterator<String>): Entry? =
     when (val token = tokens.next()) {
         "]" -> null
-        "[" -> ListEntry(generateSequence { if (tokens.hasNext()) parse(tokens) else null }.toList())
+        "[" -> ListEntry(generateSequence { parse(tokens) }.toList())
         else -> IntEntry(token.toInt())
     }
 
