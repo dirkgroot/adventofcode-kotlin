@@ -9,7 +9,10 @@ import kotlin.math.abs
 private const val LEFT = 'L'
 private const val RIGHT = 'R'
 
-private fun solution1(y: Long) = { input: String -> parseSensors(input).impossiblePositions(y) }
+private fun solution1(y: Long) = { input: String ->
+    val sensors = parseSensors(input)
+    sensors.impossiblePositions(y) - sensors.beaconsAtY(y).count()
+}
 
 private fun solution2(maxXY: Long) = { input: String ->
     val (x, y) = parseSensors(input).findDistressBeacon(maxXY)
@@ -29,10 +32,13 @@ private fun List<Sensor>.impossiblePositions(y: Long): Long {
     positions.forEach { (side, x) ->
         if (lr == 0) start = x
         if (side == LEFT) lr++ else lr--
-        if (lr == 0) count += x - start
+        if (lr == 0) count += x - start + 1
     }
     return count
 }
+
+private fun List<Sensor>.beaconsAtY(y: Long) =
+    asSequence().filter { it.beaconY == y }.map { it.beaconX to it.beaconY }.distinct()
 
 private fun List<Sensor>.findDistressBeacon(maxXY: Long) = (0..maxXY).asSequence()
     .map { y -> firstPossibleX(y, maxXY) to y }
@@ -53,9 +59,9 @@ private fun List<Sensor>.firstPossibleX(y: Long, maxX: Long): Long {
 private fun List<Sensor>.sortedEndpoints(y: Long) = asSequence().map { it.xsAt(y) }
     .filter { it != LongRange.EMPTY }
     .flatMap { listOf(LEFT to it.first, RIGHT to it.last) }
-    .sortedBy { (_, x) -> x }
+    .sortedWith { a, b -> if (a.second != b.second) a.second.compareTo(b.second) else a.first.compareTo(b.first) }
 
-private class Sensor(private val x: Long, private val y: Long, beaconX: Long, beaconY: Long) {
+private class Sensor(private val x: Long, private val y: Long, val beaconX: Long, val beaconY: Long) {
     private val distanceToBeacon = abs(x - beaconX) + abs(y - beaconY)
 
     fun xsAt(sy: Long): LongRange {
