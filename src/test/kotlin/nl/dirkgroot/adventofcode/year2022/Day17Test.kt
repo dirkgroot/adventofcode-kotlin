@@ -20,7 +20,7 @@ private class Tower(private val jetPattern: List<Int>) {
     private var repeatingPatternHeight = 0
     private var repeatingPatternLength = 0
 
-    fun simulate(iterationCount: Long): Long {
+    fun simulate(numberOfRocks: Long): Long {
         var currentShape = 0
 
         fun iterate() {
@@ -30,13 +30,13 @@ private class Tower(private val jetPattern: List<Int>) {
 
         val iterations = generateSequence { if (hasRepeatingPatternOnTop) null else iterate() }.count()
         val nonRepeatingBottomIterations = iterations % repeatingPatternLength
-        val nonRepeatingTopIterations = (iterationCount - nonRepeatingBottomIterations) % repeatingPatternLength
+        val nonRepeatingTopIterations = (numberOfRocks - nonRepeatingBottomIterations) % repeatingPatternLength
 
         repeat(nonRepeatingTopIterations.toInt()) { iterate() }
 
         val nonRepeatingBottomHeight = heightIncreases.take(nonRepeatingBottomIterations).sum()
         val nonRepeatingTopHeight = heightIncreases.takeLast(nonRepeatingTopIterations.toInt()).sum()
-        val repeatingPatternIterations = iterationCount - nonRepeatingBottomIterations - nonRepeatingTopIterations
+        val repeatingPatternIterations = numberOfRocks - nonRepeatingBottomIterations - nonRepeatingTopIterations
         val repetitionHeight = repeatingPatternIterations / repeatingPatternLength * repeatingPatternHeight
 
         return nonRepeatingBottomHeight + repetitionHeight + nonRepeatingTopHeight
