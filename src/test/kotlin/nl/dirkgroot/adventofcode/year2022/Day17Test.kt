@@ -11,36 +11,36 @@ private fun solution2(input: String) = Tower(input.toJetPattern()).simulate(1000
 
 private fun String.toJetPattern() = map { if (it == '<') -1 else 1 }
 
-private fun Tower.simulate(iterationCount: Long): Long {
-    var currentShape = 0
-
-    fun iterate() {
-        drop(shapes[currentShape])
-        currentShape = (currentShape + 1) % shapes.size
-    }
-
-    val iterations = generateSequence { if (hasRepeatingPatternOnTop) null else iterate() }.count()
-    val nonRepeatingBottomIterations = iterations % repeatingPatternLength
-    val nonRepeatingTopIterations = (iterationCount - nonRepeatingBottomIterations) % repeatingPatternLength
-
-    repeat(nonRepeatingTopIterations.toInt()) { iterate() }
-
-    val nonRepeatingBottomHeight = heightIncreases.take(nonRepeatingBottomIterations).sum()
-    val nonRepeatingTopHeight = heightIncreases.takeLast(nonRepeatingTopIterations.toInt()).sum()
-    val repeatingPatternIterations = iterationCount - nonRepeatingBottomIterations - nonRepeatingTopIterations
-    val repetitionHeight = repeatingPatternIterations / repeatingPatternLength * repeatingPatternHeight
-
-    return nonRepeatingBottomHeight + repetitionHeight + nonRepeatingTopHeight
-}
-
 private class Tower(private val jetPattern: List<Int>) {
     private val tiles = mutableListOf<Int>()
     private var jetIndex = 0
     private var height = 0
-    val heightIncreases = mutableListOf<Int>()
-    val hasRepeatingPatternOnTop get() = repeatingPatternHeight != 0
-    var repeatingPatternHeight = 0
-    var repeatingPatternLength = 0
+    private val heightIncreases = mutableListOf<Int>()
+    private val hasRepeatingPatternOnTop get() = repeatingPatternHeight != 0
+    private var repeatingPatternHeight = 0
+    private var repeatingPatternLength = 0
+
+    fun simulate(iterationCount: Long): Long {
+        var currentShape = 0
+
+        fun iterate() {
+            drop(shapes[currentShape])
+            currentShape = (currentShape + 1) % shapes.size
+        }
+
+        val iterations = generateSequence { if (hasRepeatingPatternOnTop) null else iterate() }.count()
+        val nonRepeatingBottomIterations = iterations % repeatingPatternLength
+        val nonRepeatingTopIterations = (iterationCount - nonRepeatingBottomIterations) % repeatingPatternLength
+
+        repeat(nonRepeatingTopIterations.toInt()) { iterate() }
+
+        val nonRepeatingBottomHeight = heightIncreases.take(nonRepeatingBottomIterations).sum()
+        val nonRepeatingTopHeight = heightIncreases.takeLast(nonRepeatingTopIterations.toInt()).sum()
+        val repeatingPatternIterations = iterationCount - nonRepeatingBottomIterations - nonRepeatingTopIterations
+        val repetitionHeight = repeatingPatternIterations / repeatingPatternLength * repeatingPatternHeight
+
+        return nonRepeatingBottomHeight + repetitionHeight + nonRepeatingTopHeight
+    }
 
     fun drop(shape: IntArray) {
         repeat(height + 3 + shape.size) { tiles.add(0b0000000) }
