@@ -111,7 +111,7 @@ private const val YEAR = 2022
 private const val DAY = 17
 
 class Day17Test : StringSpec({
-    "test shape 0" {
+    "drop 10 rocks and check the result" {
         val tower = Tower(exampleInput.toJetPattern())
         generateSequence(0) { (it + 1) % shapes.size }
             .take(10)
