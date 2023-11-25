@@ -58,13 +58,13 @@ private data class State(
     private val maxClayCost = blueprint.obsidianRobot.clay
     private val maxObsCost = blueprint.geodeRobot.obsidian
 
-    val subStates: List<State>
+    val subStates: Sequence<State>
         get() = sequence {
             if (oreRobots < maxOreCost) yield(buyOreRobot())
             if (clayRobots < maxClayCost) yield(buyClayRobot())
             if (clayRobots > 0 && obsidianRobots < maxObsCost) yield(buyObsidianRobot())
             if (obsidianRobots > 0) yield(buyGeodeRobot())
-        }.filter { it.minutesElapsed <= maxElapsed }.toList()
+        }.filter { it.minutesElapsed <= maxElapsed }
 
     private fun buyOreRobot() = (minutesUntil(blueprint.oreRobot) + 1).let { minutes ->
         copy(
