@@ -102,12 +102,6 @@ private data class State(
         )
     }
 
-    private fun resourcesAfter(minutes: Int) = resources.copy(
-        ore = resources.ore + oreRobots * minutes,
-        clay = resources.clay + clayRobots * minutes,
-        obsidian = resources.obsidian + obsidianRobots * minutes,
-    )
-
     private fun minutesUntil(goal: Resources) =
         if (resources.isEnoughFor(goal)) 0
         else maxOf(
@@ -116,12 +110,17 @@ private data class State(
             if (obsidianRobots > 0) ceil((goal.obsidian - resources.obsidian).toDouble() / obsidianRobots) else 0.0,
         ).toInt()
 
+    private fun resourcesAfter(minutes: Int) = resources.copy(
+        ore = resources.ore + oreRobots * minutes,
+        clay = resources.clay + clayRobots * minutes,
+        obsidian = resources.obsidian + obsidianRobots * minutes,
+    )
+
     fun geodesAt(minutes: Int) = geodesAfter(minutes - minutesElapsed)
 
     private fun geodesAfter(minutes: Int) = geodesCracked + geodeRobots * minutes
 
-    fun maxPotentialGeodes(minutesRemaining: Int) =
-        geodesCracked + minutesRemaining * geodeRobots + (1 until minutesRemaining).sum()
+    fun maxPotentialGeodes(minutes: Int) = geodesCracked + minutes * geodeRobots + (1 until minutes).sum()
 }
 
 private data class Blueprint(
