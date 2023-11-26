@@ -71,7 +71,6 @@ private const val YEAR = 2022
 private const val DAY = 20
 
 class Day20Test : StringSpec({
-    "modulo" { -10 % 7 shouldBe -3 }
     "example part 1" { ::solution1 invokedWith exampleInput shouldBe 3L }
     "part 1 solution" { ::solution1 invokedWith input(YEAR, DAY) shouldBe 13289L }
     "example part 2" { ::solution2 invokedWith exampleInput shouldBe 1623178306L }
