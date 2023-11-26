@@ -25,13 +25,10 @@ private class Numbers(longs: Sequence<Long>, key: Long) {
 
     private val entries = longs.map { Entry(it * key) }.toList().also { list ->
         list.forEachIndexed { index, entry ->
-            entry.previous = list[prev(index, list.size)]
-            entry.next = list[next(index, list.size)]
+            entry.previous = list[(index + list.size - 1) % list.size]
+            entry.next = list[(index + 1) % list.size]
         }
     }
-
-    private fun prev(index: Int, size: Int) = (index + size - 1) % size
-    private fun next(index: Int, size: Int) = (index + 1) % size
 
     fun sum(): Long {
         val zeroElement = entries.first { it.value == 0L }
@@ -66,11 +63,6 @@ private class Numbers(longs: Sequence<Long>, key: Long) {
             entry.previous = after
         }
     }
-
-    override fun toString(): String = generateSequence(entries.first { it.value == 0L }) { it.next }
-        .take(entries.size)
-        .map { it.value }
-        .joinToString(",")
 }
 
 //===============================================================================================\\
